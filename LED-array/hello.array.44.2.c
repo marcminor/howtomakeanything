@@ -440,6 +440,7 @@ int main(void) {
       //session output
       while (chr < 200) {
       	display(chr, 1);
+         get_char(&serial_pins, serial_pin_in, &chr);
       }
     }
    }
