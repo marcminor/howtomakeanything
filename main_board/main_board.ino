@@ -33,7 +33,17 @@ int16_t loadcell1_zero;
 
 //loadcell threshold
 //if the loadcell values drift by the value below we will trigger pullup bar use == true
+//adjustable
 int16_t loadcell_compare = 10;
+
+//laser threshold
+//value between 0 to 1023 that when the value goes above indicates that we see light
+//adjustable
+int laser_compare = 100;
+
+//laser flag
+//used for edge detection logic
+int laser_flag = 1;
 
 //counter display variables
 int counter = 0;
@@ -77,6 +87,20 @@ int check_usage() {
 
 }
 
+/*
+ * Function below checks to see if a pullup has been done
+ */
+
+ int lasertrip_read(){
+  int laser_value = analogRead(0);
+  if (laser_value > laser_compare) {
+    return 1;
+  }
+  else {
+    return 0;
+  }
+  
+ }
 
 void setup() {
   // put your setup code here, to run once:
@@ -117,16 +141,18 @@ void setup() {
 }
 
 void loop() {
-  //Test
 
-  if(/*Write Pullup detection case*/) {
-    if(/*Write pullup de detection case*/) {
-       counter++; 
-    }
+  if(lasertrip_read() && !lasertrip_flag {
+    lasertrip_flag = 1;
   }
 
+  if(!lasertrip_read() && lasertrip_flag) {
+       counter++;
+       lasertrip_flag = 0;
+  }
   
   Serial.write(counter);
+
 }
 
 
