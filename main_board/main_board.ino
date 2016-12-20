@@ -31,12 +31,15 @@ Adafruit_ADS1115 ads;  /* Use this for the 16-bit version */
 int16_t loadcell0_zero;
 int16_t loadcell1_zero;
 
+//loadcell threshold
+//if the loadcell values drift by the value below we will trigger pullup bar use == true
+int16_t loadcell_compare = 10;
 
 /*
  * When the system is started the loadcell values need to be zeroed.
  * This corrects for inconsistancies and drift.
  */
-int init_loadcell_values() {
+void init_loadcell_values() {
   //Read A0 and A1 on ADS1115 as differential
   loadcell0_zero = ads.readADC_Differential_0_1(); 
   
@@ -44,6 +47,32 @@ int init_loadcell_values() {
   loadcell1_zero = ads.readADC_Differential_2_3();
 }
 
+/*
+ * Funciton below checks to see if the pullup bar is in use
+ */
+int check_usage() {
+  //initialize and allocate variables
+  int16_t result0;
+  int16_t result1;
+  
+  //read loadcells
+  result0 = ads.readADC_Differential_0_1(); 
+  result1 = ads.readADC_Differential_2_3();
+
+  //Output Raw Difference
+  //Serial.print(abs(loadcell0_zero) - abs(result0));Serial.print("\n");
+
+  //return true if either zero - loadcell difference > compare
+  if( (abs(loadcell0_zero) - abs(result0)) > loadcell_compare
+   /*|| (abs(loadcell1_zero) - abs(result1)) > loadcell_compare*/) {
+
+      return 1;
+   }
+   else {
+      return 0;
+   }
+
+}
 
 
 void setup() {
@@ -86,16 +115,8 @@ void setup() {
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
-  int16_t result0;
-  int16_t result1;
-
-  //Read A0 and A1 on ADS1115 as differential
-  result0 = ads.readADC_Differential_0_1(); 
-  //Read A0 and A1 on ADS1115 as differential
-  result1 = ads.readADC_Differential_2_3();
-
-  Serial.print("Differential: "); Serial.print(result0);
+  //Test
+  Serial.print(check_usage());Serial.print("\n");
 
   delay(1000);
 }
