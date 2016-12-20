@@ -23,24 +23,25 @@
 //Libraries
 #include <Wire.h>
 #include "./Adafruit_ADS1015.h"
-//#include "./Libraries/Adafruit_ADS1X15/Adafruit_ADS1015.h"
 
 Adafruit_ADS1115 ads;  /* Use this for the 16-bit version */
 
 //Global Variables
 //loadcell values
-int16_t loadcell0_value;
-int16_t loadcell1_value;
+int16_t loadcell0_zero;
+int16_t loadcell1_zero;
+
 
 /*
  * When the system is started the loadcell values need to be zeroed.
  * This corrects for inconsistancies and drift.
  */
-int init_loadcells() {
+int init_loadcell_values() {
   //Read A0 and A1 on ADS1115 as differential
-  loadcell0_value = ads.readADC_Differential_0_1(); 
+  loadcell0_zero = ads.readADC_Differential_0_1(); 
+  
   //Read A0 and A1 on ADS1115 as differential
-  loadcell1_value = ads.readADC_Differential_2_3();
+  loadcell1_zero = ads.readADC_Differential_2_3();
 }
 
 
@@ -79,6 +80,9 @@ void setup() {
   ads.setGain(GAIN_SIXTEEN);    // 16x gain  +/- 0.256V  1 bit = 0.125mV  0.0078125mV
   
   ads.begin();
+
+  //Initialize Loadcell values
+  init_loadcell_values();
 }
 
 void loop() {
