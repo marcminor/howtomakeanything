@@ -27,6 +27,24 @@
 
 Adafruit_ADS1115 ads;  /* Use this for the 16-bit version */
 
+//Global Variables
+//loadcell values
+int16_t loadcell0_value;
+int16_t loadcell1_value;
+
+/*
+ * When the system is started the loadcell values need to be zeroed.
+ * This corrects for inconsistancies and drift.
+ */
+int init_loadcells() {
+  //Read A0 and A1 on ADS1115 as differential
+  loadcell0_value = ads.readADC_Differential_0_1(); 
+  //Read A0 and A1 on ADS1115 as differential
+  loadcell1_value = ads.readADC_Differential_2_3();
+}
+
+
+
 void setup() {
   // put your setup code here, to run once:
 
@@ -65,14 +83,17 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
-  int16_t results;
-
-  float multiplier = 0.1875F; /* ADS1115  @ +/- 6.144V gain (16-bit results) */
+  int16_t result0;
+  int16_t result1;
 
   //Read A0 and A1 on ADS1115 as differential
-  results = ads.readADC_Differential_0_1();
+  result0 = ads.readADC_Differential_0_1(); 
+  //Read A0 and A1 on ADS1115 as differential
+  result1 = ads.readADC_Differential_2_3();
 
-  Serial.print("Differential: "); Serial.print(results); Serial.print("("); Serial.print(results * multiplier); Serial.println("mV)");
+  Serial.print("Differential: "); Serial.print(result0);
 
   delay(1000);
 }
+
+
