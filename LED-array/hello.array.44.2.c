@@ -27,6 +27,7 @@
 #define bit_test(byte,bit) (byte & (1 << bit)) // test for bit set
 #define bit_delay_time 100 // bit delay for 9600 with overhead
 #define bit_delay() _delay_us(bit_delay_time) // RS232 bit delay
+#define bit_delay2() _delay_us(30000) // RS232 bit delay
 #define half_bit_delay() _delay_us(bit_delay_time/2) // RS232 half bit delay
 
 #define led_delay() _delay_ms(1) // LED delay
@@ -112,7 +113,7 @@ void get_char(volatile unsigned char *pins, unsigned char pin, char *rxbyte) {
    }
 
 
-void flash(uint8_t from, uint8_t, uint8_t delay) {
+void flash(uint8_t from, uint8_t to, uint8_t delay) {
    //
    // source from, sink to, flash
    //
@@ -416,6 +417,7 @@ void display(uint8_t count, uint8_t delay) {
 int main(void) {
    //
    static char chr;
+   static char chr_value;
    //
    // set clock divider to /1
    //
@@ -431,15 +433,20 @@ int main(void) {
    //
    while (1) {
        
-      get_char(&serial_pins, serial_pin_in, &chr);
+
+       get_char(&serial_pins, serial_pin_in, &chr);
+
+       if (chr >= 0 && chr <= 9 || chr == 200) {
+         chr_value = chr;
+       }
 
       //default state (no one on bar)
-      while (chr == 200) {
+      if (chr_value == 200) {
       	led_cycle(3,20);
       }
       //session output
-      while (chr < 200) {
-      	display(chr, 1);
+      if (chr_value < 200) {
+      	display(chr_value, 1);
       }
     }
    }
