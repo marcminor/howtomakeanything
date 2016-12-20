@@ -34,7 +34,7 @@ int16_t loadcell1_zero;
 //loadcell threshold
 //if the loadcell values drift by the value below we will trigger pullup bar use == true
 //adjustable
-int16_t loadcell_compare = 10;
+int16_t loadcell_compare = 20;
 
 //laser threshold
 //value between 0 to 1023 that when the value goes above indicates that we see light
@@ -142,16 +142,20 @@ void setup() {
 
 void loop() {
 
-  if(lasertrip_read() && !lasertrip_flag {
-    lasertrip_flag = 1;
+  while(check usage) {
+    
+    if(lasertrip_read() && !lasertrip_flag {
+      lasertrip_flag = 1;
+    }
+
+    if(!lasertrip_read() && lasertrip_flag) {
+      counter++;
+      lasertrip_flag = 0;
+    }
+  
+    Serial.write(counter);
   }
 
-  if(!lasertrip_read() && lasertrip_flag) {
-       counter++;
-       lasertrip_flag = 0;
-  }
-  
-  Serial.write(counter);
 
 }
 
