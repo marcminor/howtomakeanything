@@ -35,6 +35,9 @@ int16_t loadcell1_zero;
 //if the loadcell values drift by the value below we will trigger pullup bar use == true
 int16_t loadcell_compare = 10;
 
+//counter display variables
+int counter = 0;
+
 /*
  * When the system is started the loadcell values need to be zeroed.
  * This corrects for inconsistancies and drift.
@@ -96,7 +99,6 @@ void setup() {
 
   //Communications Serial Port
   Serial.begin(9600);
-  Serial.println("Begin!");
 
   //ADS1115 Gain Control
   //                                                                ADS1015  ADS1115
@@ -116,9 +118,15 @@ void setup() {
 
 void loop() {
   //Test
-  Serial.print(check_usage());Serial.print("\n");
 
-  delay(1000);
+  if(/*Write Pullup detection case*/) {
+    if(/*Write pullup de detection case*/) {
+       counter++; 
+    }
+  }
+
+  
+  Serial.write(counter);
 }
 
 
